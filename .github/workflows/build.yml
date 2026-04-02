@@ -1,21 +1,25 @@
-name: Build IPA
+name: Build Kotoba
+
 on: [push]
 
 jobs:
   build:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - name: Build with xcodebuild
         run: |
           xcodebuild \
-            -project Kotoba.xcodeproj \
+            -project code/Kotoba.xcodeproj \
             -scheme Kotoba \
             -configuration Release \
             -sdk iphonesimulator \
-            -derivedDataPath build
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: Kotoba-build
-          path: build/
+          path: build/Build/Products/Release-iphonesimulator/
