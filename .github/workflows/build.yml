@@ -14,12 +14,21 @@ jobs:
             -project code/Kotoba.xcodeproj \
             -scheme Kotoba \
             -configuration Release \
-            -sdk iphonesimulator \
+            -sdk iphoneos \
+            -arch arm64 \
             -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
 
-      - name: Upload artifact
+      - name: Package as IPA
+        run: |
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/Kotoba.app Payload/
+          zip -r Kotoba.ipa Payload/
+
+      - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: Kotoba-build
-          path: build/Build/Products/Release-iphonesimulator/
+          name: Kotoba-ipa
+          path: Kotoba.ipa
